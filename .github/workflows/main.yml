@@ -1,4 +1,4 @@
-name: Unzip and Build APK
+name: Flexible Android Build
 
 on:
   push:
@@ -14,8 +14,15 @@ jobs:
 
       - name: Unzip Project File
         run: |
-          unzip AlOthmanySender_Project.zip -d extracted_project
-          mv extracted_project/* . || true
+          unzip -o AlOthmanySender_Project.zip -d extracted_project
+          GRADLE_DIR=$(find extracted_project -name "build.gradle" -exec dirname {} \; | head -n 1)
+          if [ -n "$GRADLE_DIR" ]; then
+            echo "تم العثور على مجلد المشروع: $GRADLE_DIR"
+            mv $GRADLE_DIR/* . 2>/dev/null || true
+            mv $GRADLE_DIR/.* . 2>/dev/null || true
+          else
+            mv extracted_project/* . 2>/dev/null || true
+          fi
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -23,20 +30,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew || echo "No gradlew found"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Android APK
+      - name: Build APK
         run: |
           if [ -f "./gradlew" ]; then
-            ./gradlew assembleDebug
+            chmod +x ./gradlew
+            ./gradlew assembleDebug || ./gradlew assemble
           else
-            echo "هذا المشروع لا يحتوي على ملفات Gradle القياسية لبناء الأندرويد."
-            exit 1
+            echo "لم يتم العثور على ملف تشغيل محلي، سيتم البناء باستخدام أداة Gradle العامة السحابية..."
+            gradle assembleDebug || gradle assemble || gradle build
           fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: My-App-APK
-          path: "**/build/outputs/apk/debug/*.apk"
+          name: Generated-App-APK
+          path: "**/*.apk"
