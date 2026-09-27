@@ -1,0 +1,42 @@
+name: Unzip and Build APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Unzip Project File
+        run: |
+          unzip AlOthmanySender_Project.zip -d extracted_project
+          mv extracted_project/* . || true
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew || echo "No gradlew found"
+
+      - name: Build Android APK
+        run: |
+          if [ -f "./gradlew" ]; then
+            ./gradlew assembleDebug
+          else
+            echo "هذا المشروع لا يحتوي على ملفات Gradle القياسية لبناء الأندرويد."
+            exit 1
+          fi
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: My-App-APK
+          path: "**/build/outputs/apk/debug/*.apk"
