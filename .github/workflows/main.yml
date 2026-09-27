@@ -24,23 +24,26 @@ jobs:
             mv extracted_project/* . 2>/dev/null || true
           fi
 
-      - name: Set up JDK 17
+      # استخدام إصدار Java 11 الأكثر استقراراً مع مشاريع وتطبيقات الهواتف
+      - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '11'
 
+      # جعل الأداة تستخدم إصدار Gradle المكتوب داخل مشروعك بدلاً من فرض إصدار حديث
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: wrapper
 
       - name: Build APK
         run: |
           if [ -f "./gradlew" ]; then
             chmod +x ./gradlew
-            ./gradlew assembleDebug || ./gradlew assemble
+            ./gradlew assembleDebug --no-daemon || ./gradlew assemble --no-daemon
           else
-            echo "لم يتم العثور على ملف تشغيل محلي، سيتم البناء باستخدام أداة Gradle العامة السحابية..."
-            gradle assembleDebug || gradle assemble || gradle build
+            gradle assembleDebug --no-daemon || gradle assemble --no-daemon
           fi
 
       - name: Upload APK Artifact
