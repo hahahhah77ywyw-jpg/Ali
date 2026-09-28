@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Omni Group Suite</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Omni Group Suite <span>• Web</span></h1>
+    <div class="status"><b>متصل</b><span>لا توجد خاصية نشطة</span></div>
+  </div>
+  <div class="actions">
+    <button class="red" id="disconnect">فصل</button>
+    <button class="gold" onclick="scrollToId('sessions')">مزامنة القوائم</button>
+    <button class="green" onclick="addSession()">ربط / اتصال</button>
+    <button onclick="show('home')">الرئيسية</button>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="show('overview')">نظرة عامة</button>
+  <button onclick="show('sessions')">الجلسات</button>
+  <button onclick="show('join')">الانضمام</button>
+  <button onclick="show('broadcast')">النشر</button>
+  <button onclick="show('extract')">الاستخراج</button>
+  <button onclick="show('tools')">الأدوات الإضافية</button>
+</nav>
+
+<main>
+<section id="overview" class="page">
+  <h2>لوحة واحدة لكل الجلسات والأدوات</h2>
+  <div class="hero">إدارة الجلسات والملفات والإحصائيات من واجهة ويب واحدة، مع حفظ الإعدادات محليًا في المتصفح.</div>
+  <div class="cards">
+    <div class="card"><small>الجلسات</small><strong id="count">2</strong></div>
+    <div class="card"><small>المتصلة</small><strong id="connected">2</strong></div>
+    <div class="card"><small>المشغولة</small><strong id="busy">0</strong></div>
+    <div class="card"><small>الملفات</small><strong id="files">0</strong></div>
+  </div>
+</section>
+
+<section id="sessions" class="page hidden">
+  <h2>الجلسات</h2>
+  <div id="sessionList"></div>
+  <button class="green wide" onclick="addSession()">+ إضافة جلسة WhatsApp</button>
+</section>
+
+<section id="join" class="page hidden">
+  <h2>الانضمام</h2>
+  <div class="notice">يمكنك تجهيز قوائم جهات الاتصال والروابط للاستخدام المصرح به. احترم حدود المنصة وموافقة المستلمين.</div>
+  <label>اسم القائمة</label><input id="listName" placeholder="مثال: العملاء">
+  <label>الحد الأقصى للعناصر</label><input type="number" value="100">
+  <button class="green" onclick="saveList()">حفظ القائمة</button>
+</section>
+
+<section id="broadcast" class="page hidden">
+  <h2>النشر</h2>
+  <div class="notice">هذه الواجهة لإدارة المحتوى والقوائم فقط، ولا تتجاوز حظر الحساب أو حدود الخدمة.</div>
+  <label>نوع المحتوى</label>
+  <select><option>نص</option><option>رابط</option><option>ملف</option></select>
+  <label>المحتوى</label><textarea placeholder="اكتب المحتوى هنا..."></textarea>
+  <button class="blue" onclick="alert('تم حفظ المحتوى محليًا')">حفظ</button>
+</section>
+
+<section id="extract" class="page hidden">
+  <h2>الاستخراج</h2>
+  <div class="notice">استيراد بياناتك المملوكة أو المصرح لك باستخدامها.</div>
+  <input type="file" id="fileInput" accept=".csv,.txt,.xlsx">
+  <p id="fileName">لم يتم اختيار ملف</p>
+</section>
+
+<section id="tools" class="page hidden">
+  <h2>الأدوات الإضافية</h2>
+  <div class="cards">
+    <div class="tool">فحص البيانات</div>
+    <div class="tool">تنظيف القوائم</div>
+    <div class="tool">إحصائيات الجلسات</div>
+    <div class="tool">تصدير CSV</div>
+  </div>
+</section>
+
+<section id="home" class="page hidden">
+  <h2>الرئيسية</h2>
+  <div class="hero">مرحبًا بك في Omni Group Suite Web.</div>
+</section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
